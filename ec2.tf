@@ -43,19 +43,20 @@ resource "aws_instance" "my_instance" {
   }
 
   # to mount EBS volume to ec2
+  # use /dev/xvdh instead of /dev/sdh
   user_data = <<-EOF
             #!/bin/bash
             # Wait for volume to be attached
-            until [ -e /dev/sdh ]; do sleep 2; done
+            until [ -e /dev/xvdh ]; do sleep 2; done
               
             # Check if filesystem exists
-            if ! blkid /dev/sdh; then
-              mkfs -t ext4 /dev/sdh
+            if ! blkid /dev/xvdh; then
+              mkfs -t ext4 /dev/xvdh
             fi
               
             mkdir -p /mnt/extra-storage
-            mount /dev/sdh /mnt/extra-storage
-            echo '/dev/sdh /mnt/extra-storage ext4 defaults 0 0' >> /etc/fstab
+            mount /dev/xvdh /mnt/extra-storage
+            echo '/dev/xvdh /mnt/extra-storage ext4 defaults 0 0' >> /etc/fstab
             EOF
 
 }
